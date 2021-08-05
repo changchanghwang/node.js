@@ -32,26 +32,11 @@ function templateList(filelist){
 var app = http.createServer(function(request,response){
   var _url = request.url;
   var queryData = url.parse(_url, true).query;
-  var pathname = url.parse(_url, true).pathname;
-  var title = queryData.id;
-  if(pathname ==='/'){
-    
-    fs.readdir('./data', function(err, filelist){
-      fs.readFile(`data/${queryData.id}`, 'utf8', function(err, description){
-        if(title === undefined){
-          title = 'Welcome';
-          description = 'Hello Node.js';
-        }
-        var list = templateList(filelist)
-        var template = templateHTML(title, list, `<h2>${title}</h2>${description}`);
-        response.writeHead(200);
-        response.end(template);
+fdaadfsfasdsdfa
      })
     })
       
-  }else{
-    response.writeHead(404);
-    response.end('Not found');
+  }afdasdf
   }
 })
 
