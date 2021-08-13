@@ -1,20 +1,19 @@
-const { access } = require("fs");
-
-//배열
-let member = ['hwang', 'chang', 'hwan'];
-console.log(member[1]);
-for(i=0; i<member.length; i++){
-    console.log('array loop', member[i]);
+var members = ['egoing', 'k8805', 'hoya'];
+console.log(members[1]); // k8805
+var i = 0;
+while(i < members.length){
+  console.log('array loop', members[i]);
+  i = i + 1;
 }
 
-let roles = {
-    'programmer':'hwang',
-    'designer' : 'chang',
-    'manager' : 'hwan'
+var roles = {
+  'programmer':'egoing',
+  'designer' : 'k8805',
+  'manager' : 'hoya'
 }
-console.log(roles.designer);
-console.log(roles['designer']);
+console.log(roles.designer); //k8805
+console.log(roles['designer']); //k8805
 
-for(a in roles){
-  console.log('object', a, 'value => ', roles[a]);
+for(var n in roles){
+  console.log('object => ', n, 'value => ', roles[n]);
 }

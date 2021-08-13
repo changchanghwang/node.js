@@ -1,15 +1,11 @@
-console.log('a');
-console.log('b');
+console.log('A');
+console.log('B');
 
 var i = 0;
-while(i<2){
-    console.log('c1');
-    console.log('c2');
-    i++;
+while(i < 2){
+  console.log('C1');
+  console.log('C2');
+  i = i + 1;
 }
-console.log('d');
-for(a=0; a<2; a++){
-    console.log('c1');
-    console.log('c2')
-}
-console.log('d');
+
+console.log('D');
