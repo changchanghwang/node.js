@@ -1,152 +1,47 @@
-const express = require('express')
-const app = express()
-const port = 3000
+const express = require('express');
+const app = express();
+const port = 3000;
 const fs = require('fs');
+const bodyParser = require('body-parser'); //express 4.16버전 기준 내장
 const template = require('./lib/template.js')
 const path = require('path');
 const sanitizeHtml = require('sanitize-html');
 const qs = require('querystring');
+const compression = require('compression');
+const indexRouter = require('./routes/index');
+const topicRouter = require('./routes/topic');
+const helmet = require('heelmet');
 
-//route, routing
-app.get('/', (req, res) => {
+app.use(helmet());
+
+//middleWare
+app.use(express.static('public'));
+app.use(express.urlencoded({ extended:false })); //form data요청은 이렇게 처리
+// app.use(express.json); //json 요청
+app.use(compression());
+app.get('*',(req, res, next)=>{
   fs.readdir('./data', (error, filelist) =>{
-    let title = 'Welcome';
-    let description = 'Hello, Node.js';
-    let list = template.list(filelist);
-    let html = template.HTML(title, list,
-      `<h2>${title}</h2>
-      ${description}`,
-      `<a href="/create">create</a>`
-    );
-    res.send(html);
-  });
+    req.list= filelist;
+    next();
+  })
 })
 
-//url path기법으로 라우팅
-app.get('/page/:pageId', (req, res) => { // --> /page/:pageId에서 pageId를 객체화한다해야되나
-  fs.readdir('./data', function(error, filelist){
-    let filteredId = path.parse(req.params.pageId).base; //req.params.pageId랑 같은데 왜하는지?
-    console.log(req.params.pageId);
-    console.log(path.parse(req.params.pageId).base); 
-    fs.readFile(`data/${filteredId}`, 'utf8', function(err, description){
-      var title = req.params.pageId;
-      var sanitizedTitle = sanitizeHtml(title);
-      var sanitizedDescription = sanitizeHtml(description, {
-        allowedTags:['h1']
-      });
-      var list = template.list(filelist);
-      var html = template.HTML(sanitizedTitle, list,
-        `<h2>${sanitizedTitle}</h2>${sanitizedDescription}`,
-        ` <a href="/create">create</a>
-          <a href="/update/${sanitizedTitle}">update</a>
-          <form action="/delete_process" method="post">
-            <input type="hidden" name="id" value="${sanitizedTitle}">
-            <input type="submit" value="delete">
-          </form>`
-      );
-      res.send(html)//{"pageId":"HTML"}
-    });
-  });
-})
+app.get('/', indexRouter);
+app.use('/topic', topicRouter);
 
-app.get('/create', (req, res)=>{
-  fs.readdir('./data', function(error, filelist){
-    var title = 'WEB - create';
-    var list = template.list(filelist);
-    var html = template.HTML(title, list, `
-      <form action="/create" method="post">
-        <p><input type="text" name="title" placeholder="title"></p>
-        <p>
-          <textarea name="description" placeholder="description"></textarea>
-        </p>
-        <p>
-          <input type="submit">
-        </p>
-      </form>
-    `, '');
-    res.send(html);
-  });
-});
-
-app.post('/create', (req, res)=>{
-  var body = '';
-    req.on('data', function(data){
-        body = body + data;
-    });
-    req.on('end', function(){
-        var post = qs.parse(body);
-        var title = post.title;
-        var description = post.description;
-        fs.writeFile(`data/${title}`, description, 'utf8', function(err){
-          res.redirect(`/page/${title}`);
-        })
-    });
-})
-
-app.get('/update/:pageId', (req, res)=>{
-  fs.readdir('./data', function(error, filelist){
-    var filteredId = path.parse(req.params.pageId).base;
-    fs.readFile(`data/${filteredId}`, 'utf8', function(err, description){
-      var title = req.params.pageId;
-      var list = template.list(filelist);
-      var html = template.HTML(title, list,
-        `
-        <form action="/update" method="post">
-          <input type="hidden" name="id" value="${title}">
-          <p><input type="text" name="title" placeholder="title" value="${title}"></p>
-          <p>
-            <textarea name="description" placeholder="description">${description}</textarea>
-          </p>
-          <p>
-            <input type="submit">
-          </p>
-        </form>
-        `,
-        `<a href="/create">create</a> <a href="/update/${title}">update</a>`
-      );
-      res.send(html);
-    });
-  });
-})
-
-app.post('/update', (req, res)=>{
-  var body = '';
-    req.on('data', function(data){
-        body = body + data;
-    });
-    req.on('end', function(){
-        var post = qs.parse(body);
-        var id = post.id;
-        var title = post.title;
-        var description = post.description;
-        fs.rename(`data/${id}`, `data/${title}`, function(error){
-          fs.writeFile(`data/${title}`, description, 'utf8', function(err){
-            res.writeHead(302, {Location: `/page/${title}`});
-            res.end();
-        })
-      });
-  });
-})
-
-app.post("/delete_process", (req, res)=>{
-  var body = '';
-    req.on('data', function(data){
-      body = body + data;
-    });
-    req.on('end', function(){
-      var post = qs.parse(body);
-      var id = post.id;
-      var filteredId = path.parse(id).base;
-      fs.unlink(`data/${filteredId}`, function(error){
-        res.redirect(`/`); //default 302
-      })
-  });
-})
 
 app.listen(port, () => {
   console.log(`Hello World! http://localhost:${port}`)
 })
 
+app.use((req, res, next)=>{
+  res.status(404).send('Sorry cant find that!')
+})
+
+app.use((err, req, res, next)=>{ //4개를 인자로 가지고있으면 에러핸들링 미들웨어.
+  console.error(err.stack);
+  res.status(500).send('Something broke!');
+})
 
   
 // var http = require('http');

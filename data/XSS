@@ -1,3 +1,4 @@
-&lt;script&gt;
+<script>
 location.href = 'https://naver.com';
-&lt;/script&gt; 
+</script> 
+hh
