@@ -48,7 +48,7 @@
             console.log(category)
             $.ajax({
                 type: "GET",
-                url: `/api/goods${category ? "?category=" + category : ""}`,
+                url: `/api/goods${category ? "?category=" + category :"?category=" + ""}`,
                 data: {},
                 success: function (response) {
                     let goods = response["goods"]

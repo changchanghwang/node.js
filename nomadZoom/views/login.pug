@@ -1,0 +1,11 @@
+extends index.pug
+
+block head 
+    script(defer, src="/js/login.js")
+
+block content
+    input(type="text", placeholder="아이디" class ="id")
+    span(class="help-id")
+    input(type="text", placeholder="비밀번호" class ="pw")
+    span(class="help-pw")
+    button(type="button" class="btn") 확인

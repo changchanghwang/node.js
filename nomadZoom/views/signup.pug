@@ -1,0 +1,16 @@
+extends index.pug
+
+block head 
+    script(defer, src="/js/signup.js")
+
+
+block content
+    div(class="check")
+        input(type="text", placeholder="아이디" class ="id")
+        button(type="button" class="dup-check") 중복체크
+    span(class="help-id") 아이디췍
+    input(type="text", placeholder="비밀번호" class ="pw")
+    span(class="help-pw")
+    input(type="text", placeholder="비밀번호" class ="pw2")
+    span(class="help-pw2")
+    button(type="button" class="btn") 확인

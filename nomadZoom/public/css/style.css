@@ -1,0 +1,26 @@
+body{
+    background-color: beige;
+}
+
+.check{
+    display:flex;
+    margin-bottom:5px;
+}
+
+button{
+    margin: 1rem 0 0 0;
+}
+
+input{
+    margin: 1rem 0 0 0;
+}
+
+.warn{
+    color:red;
+}
+.pass{
+    color:yellowgreen;
+}
+.help-id{
+    font-size: 12px;
+}
