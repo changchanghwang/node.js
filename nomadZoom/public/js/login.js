@@ -37,11 +37,15 @@ async function login(){
     })
     let data = await res.json();
     if(data.result === "success"){
-        document.cookie = `accessToken=${data.accessToken}; Expires=${expTimeA}; path='/login';`;
-        document.cookie = `refreshToken=${data.refreshToken}; Expires=${expTimeR}; path='/'`;
+        document.cookie = `accessToken=${data.accessToken}; Expires=${expTimeA}; path=/`;
+        document.cookie = `refreshToken=${data.refreshToken}; Expires=${expTimeR}; path=/`;
         window.location.href ='/'
     }
 
+}
+
+function fail(){
+    alert("꺼져")
 }
 
 btn.addEventListener('click', login)

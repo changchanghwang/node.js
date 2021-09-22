@@ -5,14 +5,16 @@ const jwt = require('jsonwebtoken');
 
 //access token을 secret key 기반으로생성
 const generateAccessToken =(id) =>{
-    return jwt.sign({id}, process.env.ACCESS_TOKEN_SECRET, {
-        expiresIn: "10m"
+    return jwt.sign({id}, process.env.ACCESS_TOKEN_SECRET,{
+        algorithm: 'HS256',
+        expiresIn: "1m"
     });
 };
 
 //refresh token을 secret key 기반으로생성
 const generateRefreshToken = (id) =>{
     return jwt.sign({id}, process.env.REFRESH_TOKEN_SECRET,{
+        algorithm: 'HS256',
         expiresIn:"180 days"
     });
 };
@@ -65,9 +67,9 @@ router.post('/signup', async(req,res)=>{
 })
 
 router.post('/login', async(req,res)=>{
-    const {id, pw} = req.body;
+    const {id} = req.body;
     console.log(id)
-    let isExist = await users.find({id, pw});
+    let isExist = await users.find({id});
     if(isExist.length >0){
         let accessToken = generateAccessToken(id);
         let refreshToken = generateRefreshToken(id)
